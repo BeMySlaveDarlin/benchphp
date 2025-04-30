@@ -51,25 +51,18 @@ class App
         }
     }
 
-    private function printAsTable(string $title, array $result): void
+    public function printSystemInfo(): void
     {
-        $green = "\033[32m";
-        $cyan = "\033[36m";
-        $bold = "\033[1m";
-        $reset = "\033[0m";
+        $phpVersion = PHP_VERSION;
+        $os = php_uname();
+        $cpu = trim(shell_exec("nproc") ?? 'N/A') . " cores";
+        $mem = round(trim(shell_exec("grep MemTotal /proc/meminfo | awk '{print $2}'") ?? 'N/A') / (1024 * 1024), 3) . " GB";
 
-        echo PHP_EOL . "{$bold}{$cyan}=== {$title} ==={$reset}" . PHP_EOL;
-        echo "{$bold}" . str_pad("Metric", 25) . str_pad("Value", 20) . "{$reset}" . PHP_EOL;
-        echo str_repeat('-', 45) . PHP_EOL;
-
-        foreach ($result as $key => $value) {
-            $label = str_replace('_', ' ', ucfirst($key));
-            if (is_float($value)) {
-                $value = number_format($value, 10, '.', '');
-            }
-            echo str_pad($label, 25) . "{$green}{$value}{$reset}" . PHP_EOL;
-        }
-
+        echo "\033[1;34mSystem Information:\033[0m" . PHP_EOL;
+        echo str_pad("OS:", 20) . $os . PHP_EOL;
+        echo str_pad("PHP Version:", 20) . $phpVersion . PHP_EOL;
+        echo str_pad("CPU Cores:", 20) . $cpu . PHP_EOL;
+        echo str_pad("Memory:", 20) . $mem . PHP_EOL;
         echo PHP_EOL;
     }
 
@@ -91,5 +84,27 @@ class App
         }
 
         return $benchmarks;
+    }
+
+    private function printAsTable(string $title, array $result): void
+    {
+        $green = "\033[32m";
+        $cyan = "\033[36m";
+        $bold = "\033[1m";
+        $reset = "\033[0m";
+
+        echo PHP_EOL . "{$bold}{$cyan}=== {$title} ==={$reset}" . PHP_EOL;
+        echo "{$bold}" . str_pad("Metric", 25) . str_pad("Value", 20) . "{$reset}" . PHP_EOL;
+        echo str_repeat('-', 45) . PHP_EOL;
+
+        foreach ($result as $key => $value) {
+            $label = str_replace('_', ' ', ucfirst($key));
+            if (is_float($value)) {
+                $value = number_format($value, 10, '.', '');
+            }
+            echo str_pad($label, 25) . "{$green}{$value}{$reset}" . PHP_EOL;
+        }
+
+        echo PHP_EOL;
     }
 }

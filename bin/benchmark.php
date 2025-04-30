@@ -29,6 +29,8 @@ foreach ($argv as $item) {
 }
 
 $kernel = new App();
+$kernel->printSystemInfo();
+
 if ($benchmark === 'run-all') {
     foreach ($kernel->getBenchmarks() as $benchmarkName) {
         $kernel->run($benchmarkName, $options);
