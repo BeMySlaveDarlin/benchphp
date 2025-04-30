@@ -41,6 +41,7 @@
 ### Запуск тестов
 ```bash
     make benchmark HelloWorldBenchmark
+    docker-compose exec -T php php /app/bin/benchmark.php HelloWorldBenchmark --iterations=10
     # or for all
     make benchmarks
 ```

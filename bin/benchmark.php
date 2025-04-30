@@ -12,22 +12,20 @@ require ROOT_PATH . '/vendor/autoload.php';
 $dotenv = Dotenv::createImmutable(ROOT_PATH);
 $dotenv->load();
 
-$options = getopt('', ['*']);
 
-$options = array_reduce(
-    array_keys($options),
-    static function ($carry, $key) use ($options) {
-        $carry[$key] = $options[$key] ?? null;
-
-        return $carry;
-    },
-    []
-);
-
-$benchmark = $argv[1] ?? null;
-if (!$benchmark) {
+if (empty($argv[1])) {
     print "Usage: bin/benchmark <BenchmarkName> [--option=value]" . PHP_EOL . PHP_EOL;
     exit(1);
+}
+
+$benchmark = $argv[1];
+
+unset($argv[0], $argv[1]);
+$options = [];
+foreach ($argv as $item) {
+	$option = explode('=', $item);
+	$name = str_replace('--', '', $option[0]);
+	$options[$name] = $option[1];
 }
 
 $kernel = new App();
